@@ -1,0 +1,13 @@
+# Profiler output — contains real table/column names from your database
+db_profile.json
+*.skill
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
