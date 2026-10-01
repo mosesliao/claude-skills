@@ -1,0 +1,47 @@
+# .refactor-schedule.yml — standing instructions for scheduled clean-code-refactor runs
+# Place in the repository root.
+
+version: 1
+
+# How each run chooses work:
+#   next  = take the next target in the list after the one in the log (round-robin)
+#   all   = consider every target each run (still capped by the limits below)
+rotation: next
+
+limits:
+  max_files_per_run: 5
+  max_changes_per_run: 15     # individual refactoring steps
+
+# Default test command; any target can override it with its own test_command.
+test_command: "make test"       # e.g. "pytest -q", "npm test", "go test ./..."
+
+file_rules:
+  max_file_lines: 1000          # soft limit: larger files are flagged and split by responsibility
+  separate_tests: true          # move tests out of production files into the language's test location
+  allow_large_files:            # known, justified exceptions
+    - "**/generated/**"
+
+branch_prefix: refactor/clean-code
+log_file: docs/refactor-log.md
+
+targets:
+  - path: "src/billing/**"
+    areas: [naming, functions, duplication]   # naming | functions | comments | error-handling | classes | file-structure | duplication | humanize | tests | all
+    priority: high
+  - path: "src/api/handlers/*.ts"
+    areas: [functions, error-handling]
+    test_command: "npm test -- src/api"
+  - path: "infra/modules/network/**"
+    areas: [naming, duplication]
+    test_command: "terraform -chdir=infra/modules/network init -backend=false && terraform -chdir=infra/modules/network validate"
+    notes: "Terraform: any rename must use moved{} blocks; plan must show zero destroys."
+
+exclude:
+  - "**/generated/**"
+  - "**/vendor/**"
+  - "**/migrations/**"
+  - "**/*.min.js"
+
+# Things the team has decided not to change (scheduled runs will leave these alone)
+conventions:
+  - "Public function signatures in src/api are a stable contract — do not rename."
