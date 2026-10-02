@@ -1,0 +1,44 @@
+# .github/workflows/monthly-refactor.yml
+# Runs the clean-code-refactor skill on the 1st of each month and opens a PR.
+# Requirements:
+#   - Repository secret ANTHROPIC_API_KEY
+#   - Skill committed at .claude/skills/clean-code-refactor/
+#   - .refactor-schedule.yml in the repo root
+#   - Settings > Actions > Workflow permissions: allow creating PRs
+# Input names for anthropics/claude-code-action change between versions —
+# check the action's README and adjust before relying on this.
+
+name: Monthly clean-code refactor
+
+on:
+  schedule:
+    - cron: "0 1 1 * *"        # 01:00 UTC on the 1st (09:00 Singapore time)
+  workflow_dispatch: {}         # allow manual runs
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refactor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Add your language toolchain setup here so tests can run, e.g.:
+      # - uses: actions/setup-python@v5
+      #   with: { python-version: "3.12" }
+      # - run: pip install -r requirements.txt
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Run the clean-code-refactor skill in scheduled mode using
+            .refactor-schedule.yml. Follow its limits and exclusions, work on a
+            new branch named per branch_prefix, open a pull request with the
+            refactor summary, and append an entry to the refactor log.
+            Never push to the default branch.

@@ -7,6 +7,7 @@ A collection of [Claude Skills](https://docs.claude.com/en/docs/agents-and-tools
 
 | Skill | What it does |
 |-------|--------------|
+| [`clean-code-refactor`](./clean-code-refactor) | Refactors code in any language using the principles of Robert C. Martin's *Clean Code*: smell reports, phased refactoring plans, behavior-preserving refactors, "humanizing" AI-generated code (removing narrating comments, boilerplate docs, defensive padding, speculative abstractions), and optional scheduled (e.g. monthly) runs that open a PR. |
 | [`db-modernizer`](./db-modernizer) | Audits a legacy, badly-designed SQL database over a live connection and produces a cleanup-and-migration plan landing the data in a clean, normalized Laravel-ready schema. |
 | [`job-application-optimizer`](./job-application-optimizer) | Takes a resume and a job description and produces a tailored application package: resume audit, interactive gaps interview, XYZ-formula rewrite, ATS stress test, cover letter, interview prep, and a salary negotiation script. |
 
@@ -28,6 +29,10 @@ Or point Claude Code at the folder directly.
 claude-skills/
 ├── LICENSE
 ├── README.md
+├── clean-code-refactor/
+│   ├── SKILL.md
+│   ├── assets/
+│   └── references/
 ├── db-modernizer/
 │   ├── SKILL.md
 │   ├── README.md
